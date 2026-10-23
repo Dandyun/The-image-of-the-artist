@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="An interactive visual archive exploring how artists have represented themselves over time.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mukta+Vaani:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="styles.css">
+  <title>The Image of the Artist</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="supabase-config.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <header class="site-header" id="siteHeader">
+    <button class="brand-mark" id="homeMark" type="button" aria-label="Go to the beginning" title="Home"><span></span><span></span><span></span><span></span></button>
+    <span class="brand-name" id="brandName">The Image of the Artist</span>
+    <button class="mobile-nav-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="navigation" aria-label="Open navigation"><span></span><span></span></button>
+    <nav class="nav" id="navigation" aria-label="Main navigation">
+      <button type="button" data-go="landing" class="nav-link">Home</button>
+      <button type="button" data-go="survey" class="nav-link">Survey</button>
+      <button type="button" data-go="archive" class="nav-link">Archive</button>
+      <button type="button" data-go="results" class="nav-link">Results</button>
+      <button type="button" id="aboutButton" class="nav-about">About</button>
+    </nav>
+  </header>
+
+  <main id="mainContent">
+    <!-- Page one: the title remains hidden until someone continues. -->
+    <section class="page hero" id="landing" aria-labelledby="heroTitle">
+      <div class="hero-inner">
+        <div class="hero-visual reveal-on-load">
+          <img src="artist/emoji.png" data-fallback="emoji" alt="A figure holding a brush and a palette" class="emoji-hero">
+          <span class="emoji-unicode" aria-hidden="true">🧑‍🎨</span>
+        </div>
+        <div class="hero-content reveal-on-load delay-1">
+          <h1 id="heroTitle">What do<br>you see?</h1>
+          <p class="hero-description">Look at the image. Write the first word or phrase that comes to mind.</p>
+          <form id="impressionForm" autocomplete="off">
+            <label for="impressionInput" class="sr-only">Your first impression</label>
+            <div class="line-field">
+              <input type="text" id="impressionInput" maxlength="120" placeholder="Your first impression…" required aria-describedby="impressionError">
+            </div>
+            <p id="impressionError" class="field-note" role="status" aria-live="polite"></p>
+            <button type="submit" class="primary-button hero-continue">Continue <span aria-hidden="true">→</span></button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Page two: the two questions advance without scrolling. -->
+    <section class="page survey-section section-container" id="survey" aria-labelledby="surveyHeading" hidden>
+      <div class="survey-center">
+        <div class="section-intro survey-intro">
+          <h2 id="surveyHeading">Your perspective.</h2>
+          <p class="survey-intro-description"><span>Before exploring the archive, tell us what comes to mind.</span><span>There are no right or wrong answers.</span></p>
+        </div>
+        <div class="survey-shell" id="surveyShell">
+          <div id="surveyQuestionContainer">
+            <p class="survey-review-notice" id="surveyReviewNotice" hidden>Review mode — your original submission is already counted. You can revisit both questions, but this review will not submit another response.</p>
+            <div class="survey-progress" aria-label="Survey progress"><span class="progress-dot is-current"></span><span class="progress-dot"></span></div>
+            <p class="survey-kicker" id="surveyKicker">01</p>
+            <h3 id="surveyQuestionTitle">What does an artist do?</h3>
+            <p class="survey-instruction">Select all that apply.</p>
+            <div class="survey-options" id="surveyOptions" role="group" aria-label="Answer choices"></div>
+            <p id="surveyValidation" class="form-validation" role="status" aria-live="polite"></p>
+            <div class="survey-actions">
+              <button type="button" class="primary-button" id="surveyNext">Next <span aria-hidden="true">→</span></button>
+            </div>
+          </div>
+          <div class="survey-complete" id="surveyComplete" hidden>
+            <h3>Thank you for looking closer.</h3>
+            <p id="surveyCompleteMessage">Your answers are saved in this browser. Connect a database to share results across visitors.</p>
+            <div class="complete-actions"><button type="button" class="text-button" id="reviewSurveyAgain">Review questions again</button><button type="button" class="primary-button" data-go="archive">Continue <span aria-hidden="true">→</span></button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Page three: the ONLY page intended to scroll vertically. -->
+    <section class="page archive-section section-container" id="archive" aria-labelledby="archiveHeading" hidden>
+      <div class="archive-heading">
+        <div><h2 id="archiveHeading">The Image of the Artist.</h2></div>
+        <div class="archive-explainer"><p>How have artists represented themselves? From paintbrushes and palettes to bodies, gestures, performances, and symbolic objects, artists have used many forms to construct their own images. Explore 25 works organized by visual categories, and discover how these forms appear and change over time.</p></div>
+      </div>
+      <div class="archive-toolbar" id="archiveToolbar">
+        <div class="archive-toolbar-top">
+          <div class="filters" id="filterButtons" aria-label="Filter artworks by visual representation">
+          <button type="button" class="filter-chip active" data-category="all" aria-pressed="true">All <span class="chip-count">25</span></button>
+          <button type="button" class="filter-chip" data-category="tools" aria-pressed="false">Tools</button>
+          <button type="button" class="filter-chip" data-category="body" aria-pressed="false">Body &amp; Pose</button>
+          <button type="button" class="filter-chip" data-category="space" aria-pressed="false">Space</button>
+          <button type="button" class="filter-chip" data-category="process" aria-pressed="false">Process</button>
+          <button type="button" class="filter-chip" data-category="object" aria-pressed="false">Symbolic Object</button>
+          </div>
+          <button type="button" class="primary-button archive-toolbar-continue" data-go="results">Continue <span aria-hidden="true">→</span></button>
+        </div>
+        <div class="toolbar-bottom"><span id="worksCount" aria-live="polite">25 works</span></div>
+      </div>
+      <div class="artwork-grid" id="artworkGrid" aria-live="polite"></div>
+    </section>
+
+    <!-- Page four: two equally weighted charts, with one color per question. -->
+    <section class="page results-section section-container" id="results" aria-labelledby="resultsHeading" hidden>
+      <div class="results-layout">
+        <div class="results-heading">
+          <h2 id="resultsHeading">What did we see?</h2>
+          <div class="response-count"><span class="response-total" id="responseTotal">0</span><span id="responseUnit"> responses collected</span></div>
+          <p class="results-intro">These charts update as visitors respond.</p>
+          <div class="results-status"><span class="data-status" id="dataStatus"><span class="status-dot"></span><span>Loading responses</span></span><button class="refresh-button" id="refreshResults" type="button">↻ Refresh</button></div>
+        </div>
+        <div class="results-grid">
+          <article class="result-block activity-results"><div class="result-label">The practice</div><h3>What does an artist do?</h3><div class="bar-chart" id="activitiesChart"></div></article>
+          <article class="result-block appearance-results"><div class="result-label">The appearance</div><h3>What makes someone look like an artist?</h3><div class="bar-chart" id="visualsChart"></div></article>
+        </div>
+        <div class="results-next"><button type="button" class="primary-button" data-go="reflection">Continue <span aria-hidden="true">→</span></button></div>
+      </div>
+    </section>
+
+    <!-- Page five: return to the same image and one final, open-ended question. -->
+    <section class="page reflection-section" id="reflection" aria-labelledby="reflectionHeading" hidden>
+      <div class="reflection-inner">
+        <div class="reflection-emoji"><img src="artist/emoji.png" data-fallback="emoji" alt="The figure shown at the beginning"><span class="emoji-unicode" aria-hidden="true">🧑‍🎨</span></div>
+        <h2 id="reflectionHeading">What do you see now?</h2>
+        <div class="past-answer" id="pastAnswer" hidden><span>You first wrote</span><p id="pastAnswerText"></p></div>
+        <p class="closing-question">If artists can represent themselves through their bodies, tools, objects, actions, and even other people's identities, why has the paintbrush and palette remained such a recognizable image of an artist?</p>
+      </div>
+      <footer class="site-footer"><span>The Image of the Artist · An interactive visual archive</span><button type="button" class="primary-button home-button" data-go="landing">Home <span aria-hidden="true">→</span></button></footer>
+    </section>
+  </main>
+
+  <div class="overlay" id="artworkOverlay" hidden>
+    <div class="overlay-backdrop" data-close="artwork"></div>
+    <article class="artwork-dialog" role="dialog" aria-modal="true" aria-labelledby="detailTitle" tabindex="-1">
+      <button type="button" class="dialog-close" id="detailClose" aria-label="Close artwork details">×</button>
+      <div class="detail-image-pane"><img id="detailImage" alt="Artwork"><span class="detail-image-label" id="detailImageLabel"></span></div>
+      <div class="detail-info-pane">
+        <p class="detail-overline" id="detailOverline"></p>
+        <h2 id="detailTitle"></h2><p class="detail-artist" id="detailArtist"></p><p class="detail-year" id="detailYear"></p>
+        <div class="detail-divider"></div>
+        <div class="detail-field"><h3>Medium</h3><p id="detailMedium"></p></div>
+        <div class="detail-field"><h3>Visual elements</h3><div class="element-list" id="detailElements"></div></div>
+        <div class="detail-field"><h3>Representation</h3><p id="detailRepresentation"></p></div>
+        <div class="detail-field"><h3>Categories</h3><div class="category-list" id="detailCategories"></div></div>
+        <div class="detail-source"><span>Source</span><a id="detailSource" href="#" target="_blank" rel="noopener noreferrer">View original →</a></div>
+      </div>
+    </article>
+  </div>
+
+  <div class="overlay" id="aboutOverlay" hidden>
+    <div class="overlay-backdrop" data-close="about"></div>
+    <article class="about-dialog" role="dialog" aria-modal="true" aria-labelledby="aboutHeading" tabindex="-1">
+      <button type="button" class="dialog-close" id="aboutClose" aria-label="Close about">×</button>
+      <h2 id="aboutHeading">The Image of the Artist.</h2>
+      <p class="about-lead">What makes an artist recognizable?</p>
+      <p>This interactive visual archive explores how artists have represented themselves across time—from traditional self-portraits to performances and symbolic objects. The collection includes twenty-five works organized by the visual elements they share: tools, bodies, poses, spaces, processes, and objects.</p>
+      <p>It begins with a familiar image and a few questions, then invites you to discover relationships by browsing and filtering. No particular interpretation is required.</p>
+      <p class="about-note">Some works are staged photographs or performance documentation rather than conventional self-portraits.</p>
+      <div class="about-privacy"><h3>Your responses</h3><p>Multiple-choice survey responses and a broad category for the first impression may be collected anonymously. Your exact written first impression remains in this browser; it is not sent to the shared results database. No name or email is requested.</p></div>
+    </article>
+  </div>
+</body>
+</html>
